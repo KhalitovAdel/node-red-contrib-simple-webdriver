@@ -62,11 +62,12 @@ export function NodeOpenBrowserConstructor(this: NodeOpenWeb, conf: NodeOpenBrow
     const webURL = replaceMustache(conf.webURL, msg)
     this.status({ fill: 'blue', shape: 'ring', text: 'opening browser' })
     try {
-      msg.browser = await driver.start(conf.browserType, capabilities)
+      msg.browser = await driver.start(conf.browserType, capabilities);
+      const targetUrl = (msg.payload || {}).url || webURL;
       try {
-        await msg.browser.navigate().to(webURL)
+        await msg.browser.navigate().to(targetUrl)
       } catch (e) {
-        node.error("Can't navitage to " + webURL)
+        node.error("Can't navitage to " + targetUrl)
         node.status({ fill: 'yellow', shape: 'dot', text: 'navigate error' })
         done(e)
       }
